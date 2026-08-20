@@ -1,0 +1,12 @@
+signal-generator-pl/
+signal-generator-pl.cache/
+signal-generator-pl.hw/
+signal-generator-pl.xpr
+signal-generator-pl.gen
+signal-generator-pl.srcs
+
+*.log
+*.jou
+*.str
+.Xil/
+*.swp
