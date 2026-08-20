@@ -14,3 +14,4 @@ signal-generator-pl.runs
 *.swp
 
 .idea
+*.xsa
