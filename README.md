@@ -40,3 +40,4 @@ similar when initializing the project under [Setup](#Setup).
 
 
 ## Processing System (PS)
+First export the XSA including bitstream. Then run vitis -s `create_vitis_project.py`
