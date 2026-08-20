@@ -34,6 +34,9 @@ Vivado% source create_all.tcl
 similar when initializing the project under [Setup](#Setup).
 
 > [!WARNING]
-> Calling the script will delete all existing files - make sure to commit merge your changes before updating
+> Calling the script will delete all project files - make sure to commit and merge your changes before updating!
 
 ## Architecture
+
+
+## Processing System (PS)

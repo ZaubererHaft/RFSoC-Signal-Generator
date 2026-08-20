@@ -21,6 +21,21 @@
 
 
 module modulator(
-        input wire valid
+        input wire nreset,
+        input wire valid,
+        input wire clock,
+        output reg[15:0] i,
+        output reg[15:0] q
     );
+    
+    always @(posedge clock) begin
+        if(!nreset) begin
+            i <= 16'h0;
+            q <= 16'h0;
+        end
+        else begin
+            i <= 16'h1;
+            q <= 16'h1;
+        end
+    end
 endmodule

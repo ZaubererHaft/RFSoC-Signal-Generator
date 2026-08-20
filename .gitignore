@@ -6,7 +6,7 @@ signal-generator-pl.gen
 signal-generator-pl.srcs
 signal-generator-pl.sim
 signal-generator-pl.ip_user_files
-
+signal-generator-pl.runs
 *.log
 *.jou
 *.str
