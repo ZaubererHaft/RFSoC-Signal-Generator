@@ -1,12 +1,11 @@
-set project_name "signal-analyzer-pl"
+set project_name "signal-generator-pl"
 
-# 1. Offenes Projekt im Speicher schließen (hebt Dateisperren/Locks auf)
+# Close open project if necessary
 if {[current_project -quiet] != ""} {
     puts "INFO: Schließe offenes Projekt im Speicher..."
     close_project
 }
 
-# 2. Liste der zu löschenden Vivado-Dateien und -Ordner im Root-Verzeichnis
 set files_to_clean [list \
     "${project_name}.xpr" \
     "${project_name}.srcs" \
@@ -18,7 +17,7 @@ set files_to_clean [list \
     ".Xil" \
 ]
 
-# 3. Gezieltes Löschen der Altlasten
+# Delete old files
 puts "INFO: Starte Bereinigung des Root-Verzeichnisses..."
 foreach item $files_to_clean {
     if {[file exists $item]} {
@@ -28,28 +27,26 @@ foreach item $files_to_clean {
 }
 puts "INFO: Bereinigung abgeschlossen. Starte Projekt-Neuaufbau..."
 
-# 1. Projekt und Block Design aufbauen
+# Build project and design files
 source create_project.tcl
 
-# 2. Den Pfad zur .bd-Datei auslesen
+# find block designs
 set bd_file [get_files *.bd]
 
-# 3. Den HDL-Wrapper generieren (erzeugt die Dateien auf der Festplatte)
+# generator HDL wrapper on disk
 make_wrapper -files $bd_file -top
 
-# 4. Suchpfad für den Wrapper dynamisch ermitteln
-# (Sucht im .gen-Verzeichnis nach Verilog- oder VHDL-Wrappern)
 set wrapper_files [glob -nocomplain ./vivado_project/*.gen/sources_1/bd/*/*_wrapper.[vh]*]
 
-# 5. Fehler abfangen: Datei nur hinzufügen, wenn glob auch etwas gefunden hat
+# Add the wrapper files
 if {[llength $wrapper_files] > 0} {
-    puts "INFO: Wrapper gefunden, füge hinzu: $wrapper_files"
+    puts "INFO: Wrapper found, add: $wrapper_files"
     add_files -norecurse [file normalize [lindex $wrapper_files 0]]
 } else {
-    puts "WARNING: Wrapper-Datei konnte im .gen-Pfad nicht gefunden werden."
-    puts "Bitte erzeuge den Wrapper nach dem Öffnen manuell per Rechtsklick im GUI."
+    puts "WARNING: Wrappers not found in gen path."
+    puts "Please create wrappers manually in the vivado ui (right click -> create HDL wrapper)"
 }
 
-# 6. Compile-Order aktualisieren
+# Refresh compil folder
 update_compile_order -fileset sources_1
 

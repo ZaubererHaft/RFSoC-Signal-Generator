@@ -4,9 +4,13 @@ signal-generator-pl.hw/
 signal-generator-pl.xpr
 signal-generator-pl.gen
 signal-generator-pl.srcs
+signal-generator-pl.sim
+signal-generator-pl.ip_user_files
 
 *.log
 *.jou
 *.str
 .Xil/
 *.swp
+
+.idea
