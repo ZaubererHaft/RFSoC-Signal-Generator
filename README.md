@@ -2,13 +2,13 @@
 
 # Clone, Push and Pull
 
-## First time clone
+## Clone
 After cloning the repository, you need to create a vivado project first. For convenience, you can use the provided scripts:
 ```
 ./create_projects.sh <project-name>
 ```
 where `project-name` can be chosen arbitrarily.
-This cript creates a simple Vivado project for the PL and a Vitis project for the PS with the given name with the following content:
+This cript creates a simple Vivado project for the PL and a Vitis project for the PS with the given name and the following content:
 
 * In Vivado, a block design called `main` is created with an empty but pre-routed MPCSoC IP block.
 * In addition, the default constraints file as well as a test Verilog file is added to the project. 
@@ -16,24 +16,23 @@ This cript creates a simple Vivado project for the PL and a Vitis project for th
 * The PS project is generated within the workspace `vitis-ws`. 
 * A default platform as well as a sample project including a main function is added.
 
-You can use this script as a template for own projects.  In this case, overwrite the template project as described in the [Pull](#Pull Updates) section.
+You can use this script as a template for own projects.  In this case, overwrite the template project as described in the [Pull](#Pull) section.
 
-## Pull Updates
-After project creation (e.g., becuase you first cloned to project) or if you want to incorporate updates from the repository, pull all changes via git first. Then re-create the Vivado project with
+## Pull
+After project creation (e.g., because you first cloned to project) or if you want to incorporate updates from the repository, pull all changes via git first. Then re-create the Vivado project with
 ```
 ./recreate_pl.sh <project-name>
 ```
 
-The Vitis should be re-created with the script
+The Vitis project should be re-created with the script
 ```
-./recreate_pl.sh <project-name>
+vitis -s create_vitis_project.py
 ```
 
 > [!WARNING]
 > Calling the scripts will delete all project files - make sure to commit and merge your changes before updating!
 
-## Push Updates
-
+## Push
 Use the folders `src-pl` and `src-ps` to add new source files (both for HDL and C code). Make sure that you do not copy the files locally to your project, instead reference to the files within the folders (otherwise they won't be commited).
 
 If you plan to update the Vivado project *after* its generation, navigate to the root directory in the Vivado tcl console:
@@ -45,8 +44,6 @@ and then invoke the script [export_vivado_for_git.tcl](export_vivado_for_git.tcl
 source export_vivado_for_git.tcl
 ```
 which will write a tcl-script called `recreate_vivado_project.tcl` re-creating the project (including block designs). Then add and commit as usual.
-
-For Vitis, run `call vitis.bat -s create_vitis_project.py`
 
 
 ## Clean up
