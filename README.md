@@ -5,9 +5,8 @@
 ## Clone
 After cloning the repository, you need to create a vivado project first. For convenience, you can use the provided scripts:
 ```
-./create_projects.sh <project-name>
+./create_projects.sh siggen
 ```
-where `project-name` can be chosen arbitrarily.
 This cript creates a simple Vivado project for the PL and a Vitis project for the PS with the given name and the following content:
 
 * In Vivado, a block design called `main` is created with an empty but pre-routed MPCSoC IP block.
@@ -19,12 +18,12 @@ This cript creates a simple Vivado project for the PL and a Vitis project for th
 You can use this script as a template for own projects.  In this case, overwrite the template project as described in the [Pull](#Pull) section.
 
 ## Pull
-After project creation (e.g., because you first cloned to project) or if you want to incorporate updates from the repository, pull all changes via git first. Then re-create the Vivado project with
+After project creation (e.g., because you first cloned the project) or if you want to incorporate updates from the repository, pull all changes via git first. Then re-create the Vivado project with
 ```
-./recreate_pl.sh <project-name>
+./recreate_pl.sh siggen
 ```
 
-The Vitis project should be re-created with the script
+The Vitis project can be re-created with the script
 ```
 vitis -s create_vitis_project.py
 ```
@@ -49,7 +48,7 @@ which will write a tcl-script called `recreate_vivado_project.tcl` re-creating t
 ## Clean up
 Call
 ```
-./cleanup.sh <project-name>
+./cleanup.sh siggen
 ```
 to delete all generated files
 

@@ -25,7 +25,8 @@ foreach item $files_to_clean {
 }
 
 # Build project and design files
-source recreate_vivado_project.tcl
+set ::user_project_name "$project_name"
+source recreate_vivado_project.tcl 
 
 # Refresh compile folder
 update_compile_order -fileset sources_1
