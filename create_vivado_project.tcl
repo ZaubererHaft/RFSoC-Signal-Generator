@@ -52,37 +52,91 @@ if {[llength [glob -nocomplain $project_dir/constraints/*.xdc]] > 0} {
 }
 
 # ==============================================================================
-# 4. Create block designs
+# 4. Create block designs (Ugly!)
 # ==============================================================================
-set bd_tcl_files [glob -nocomplain "${project_dir}/bd/*.tcl"]
+set is_new_project 1
 
 # Re-Create: There are already designs
-if {[llength $bd_tcl_files] > 0} {
+foreach fileset {"sources_1" "sim_1"} {
+    set bd_tcl_files [glob -nocomplain "${project_dir}/bd/${fileset}/*.tcl"]
 
-    puts "INFO: Found block designs, re-create them..."
-    
-    foreach tcl_file $bd_tcl_files {
-        set bd_name [file rootname [file tail $tcl_file]]
-        source $tcl_file
-        
-        open_bd_design [get_files ${bd_name}.bd]
-        validate_bd_design
-        save_bd_design
-        
-        set bd_file [get_files ${bd_name}.bd]
-        
-        make_wrapper -files $bd_file -top
-        
-        set wrapper_path "${project_dir}/${project_name}.srcs/sources_1/bd/${bd_name}/hdl/${bd_name}_wrapper.v"
-        if {[file exists $wrapper_path]} {
-            add_files -norecurse $wrapper_path
-        } else {
-            set wrapper_path "${project_dir}/${project_name}.gen/sources_1/bd/${bd_name}/hdl/${bd_name}_wrapper.v"
-            add_files -norecurse $wrapper_path
+    if {[llength $bd_tcl_files] > 0} {
+        foreach tcl_file $bd_tcl_files {
+            # Which BD in which fileset?
+            set bd_name [file rootname [file tail $tcl_file]]
+
+            # Create BD (easy)
+            source $tcl_file
+
+            # Now super ugly: move the created block design to the correct file set (it is always created in sources_1, NO chance to change this)
+            if {$fileset != "sources_1"} {
+                set src_bd_dir "${project_dir}/${project_name}.srcs/sources_1/bd/${bd_name}"
+                set dest_bd_dir "${project_dir}/${project_name}.srcs/${fileset}/bd/${bd_name}"
+                set final_bd_file "${dest_bd_dir}/${bd_name}.bd"
+
+                current_fileset $fileset
+                remove_files -fileset sources_1 [get_files ${bd_name}.bd]
+
+                set dest_parent_dir "${project_dir}/${project_name}.srcs/${fileset}/bd"
+                if {![file exists $dest_parent_dir]} {
+                    file mkdir $dest_parent_dir
+                }
+
+                if {[file exists $src_bd_dir]} {
+                    file rename -force $src_bd_dir $dest_bd_dir
+                }
+
+                add_files -fileset $fileset $final_bd_file
+
+            } else {
+                current_fileset
+            }
+
+            # create block design (still okay)
+            open_bd_design [get_files ${bd_name}.bd]
+            validate_bd_design
+            save_bd_design
+
+            # create wrapper ...
+            set bd_file [get_files ${bd_name}.bd]
+            make_wrapper -fileset $fileset  -files $bd_file -top 
+
+            # .. wait for it ...
+            set src_gen_dir  "${project_dir}/${project_name}.gen/sources_1/bd/${bd_name}"
+            set dest_gen_dir "${project_dir}/${project_name}.gen/${fileset}/bd/${bd_name}"
+            set src_wrapper_dir  "${project_dir}/${project_name}.gen/sources_1/bd/${bd_name}/hdl"
+            set dest_wrapper_dir "${project_dir}/${project_name}.gen/${fileset}/bd/${bd_name}/hdl"
+            set src_wrapper_file  "${src_wrapper_dir}/${bd_name}_wrapper.v"
+            set dest_wrapper_file "${dest_wrapper_dir}/${bd_name}_wrapper.v"
+
+            #... again SUPER ugly, move the wrapper too, make_wrapper constantly ignores the fileset argument
+            if {$fileset != "sources_1"} {
+                if {[llength [get_files -quiet "${bd_name}_wrapper.v"]] > 0} {
+                    remove_files -fileset sources_1 [get_files "${bd_name}_wrapper.v"]
+                }
+
+                set dest_gen_parent "${project_dir}/${project_name}.gen/${fileset}/bd"
+                if {![file exists $dest_gen_parent]} {
+                    file mkdir $dest_gen_parent
+                }
+
+                if {[file exists $src_gen_dir] && ![file exists $dest_gen_dir]} {
+                    puts "Verschiebe den gesamten Generierungs-Ordner physisch nach ${fileset}..."
+                    file rename -force $src_gen_dir $dest_gen_dir
+                }
+                
+                add_files -fileset $fileset -norecurse $dest_wrapper_file
+            } else {
+                add_files -fileset sources_1 -norecurse $src_wrapper_file
+            }
+
         }
-    }
-    update_compile_order -fileset sources_1
-} else {
+        set is_new_project 0
+    } 
+
+} 
+
+if {$is_new_project > 0} {
     # New repository: create sample block design
     puts "INFO: Initial setup, creating sample block design..."
     # Create main block design
