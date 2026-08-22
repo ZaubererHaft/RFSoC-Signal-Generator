@@ -3,33 +3,32 @@
 # Clone, Push and Pull
 
 ## Clone
-After cloning the repository, you need to create a vivado project first. For convenience, you can use the provided scripts:
+After cloning the repository, you need to create Vivado and Vitis projects first. For convenience, you can use the provided script:
 ```
 ./create_projects.sh siggen
 ```
-This cript creates a simple Vivado project for the PL and a Vitis project for the PS with the given name and the following content:
-
-* In Vivado, a block design called `main` is created with an empty but pre-routed MPCSoC IP block.
-* In addition, the default constraints file as well as a test Verilog file is added to the project. 
-* Then, the bitstream for the project is generated and the hardware XSA is exported for the PS project.
-* The PS project is generated within the workspace `vitis-ws`. 
-* A default platform as well as a sample project including a main function is added.
-
-You can use this script as a template for own projects.  In this case, overwrite the template project as described in the [Pull](#Pull) section.
+> [!INFO]
+> Executing this command will create the FPGA's bitsream and might take a while
 
 ## Pull
-After project creation (e.g., because you first cloned the project) or if you want to incorporate updates from the repository, pull all changes via git first. Then re-create the Vivado project with
+After project creation: if you want to incorporate updates from the repository, pull all changes via git first. Depending on where the changes are, re-create the Vivado by calling 
 ```
-./recreate_pl.sh siggen
+./create_projects.sh siggen
 ```
-
-The Vitis project can be re-created with the script
+The Vitis project can be re-created similar with the script
 ```
 vitis -s create_vitis_project.py
 ```
+however note that it requires the hardware platform available as xsa files. 
+
+If you just want all changes from the remote repository, simple call again
+```
+./create_projects.sh siggen
+```
+but be aware of the synthesizing times
 
 > [!WARNING]
-> Calling the scripts will delete all project files - make sure to commit and merge your changes before updating!
+> Calling the scripts will delete all old project files - make sure to commit and merge your changes before updating!
 
 ## Push
 Use the folders `src-pl` and `src-ps` to add new source files (both for HDL and C code). Make sure that you do not copy the files locally to your project, instead reference to the files within the folders (otherwise they won't be commited).
@@ -42,7 +41,7 @@ and then invoke the script [export_vivado_for_git.tcl](export_vivado_for_git.tcl
 ```
 source export_vivado_for_git.tcl
 ```
-which will write a tcl-script called `recreate_vivado_project.tcl` re-creating the project (including block designs). Then add and commit as usual.
+which will re-write tcl-scripts for all block designs. Then add and commit as usual.
 
 
 ## Clean up
@@ -50,7 +49,7 @@ Call
 ```
 ./cleanup.sh siggen
 ```
-to delete all generated files
+to delete all generated files manually.
 
 ## Known Issues
 When using Windows, copy this template to a higher level folder like `C:\projects` or similar. If you have a deep nested folder structure, the code generation might be incomplete with the message

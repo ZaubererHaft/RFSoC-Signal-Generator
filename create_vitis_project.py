@@ -1,5 +1,6 @@
 import os
 import vitis
+import shutil
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 WORKSPACE_DIR = os.path.join(BASE_DIR, "vitis-ws")
@@ -9,7 +10,9 @@ if not os.path.exists(XSA_PATH):
     print("XSA does not exist - please export it from vivado after bitsream generation")
     exit()
 
-if not os.path.exists(WORKSPACE_DIR):
+if os.path.exists(WORKSPACE_DIR):
+    shutil.rmtree(WORKSPACE_DIR)
+else:
     os.makedirs(WORKSPACE_DIR)
 
 client = vitis.create_client()
