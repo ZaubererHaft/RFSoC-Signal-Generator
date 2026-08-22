@@ -8,7 +8,7 @@ After cloning the repository, you need to create Vivado and Vitis projects first
 ```
 ./create_projects.sh siggen
 ```
-> [!INFO]
+> [!NOTE]
 > Executing this command will create the FPGA's bitsream and might take a while
 
 ## Pull
