@@ -5,6 +5,7 @@ import shutil
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 WORKSPACE_DIR = os.path.join(BASE_DIR, "vitis-ws")
 XSA_PATH = os.path.join(BASE_DIR, "main_wrapper.xsa")
+SRC_DIR = os.path.abspath("./src-ps")
 
 if not os.path.exists(XSA_PATH):
     print("XSA does not exist - please export it from vivado after bitsream generation")
@@ -33,7 +34,6 @@ app = client.create_app_component(
     domain="standalone_domain"
 )
 
-SRC_DIR = os.path.abspath("./src-ps")
 if os.path.exists(SRC_DIR):
     files_to_import = os.listdir(SRC_DIR)
     

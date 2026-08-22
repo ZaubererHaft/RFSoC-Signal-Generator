@@ -1,6 +1,7 @@
 # RFSoc Signal Generator
 
 # Clone, Push and Pull
+Working with Vivado and Vitis within a version control system can be cumbersome. The following steps show how to set up the project bor both.
 
 ## Clone
 After cloning the repository, you need to create Vivado and Vitis projects first. For convenience, you can use the provided script:
@@ -11,21 +12,21 @@ After cloning the repository, you need to create Vivado and Vitis projects first
 > Executing this command will create the FPGA's bitsream and might take a while
 
 ## Pull
-After project creation: if you want to incorporate updates from the repository, pull all changes via git first. Depending on where the changes are, re-create the Vivado by calling 
+If you want to incorporate updates from the repository, pull all changes via git first. Depending on where the changes are, re-create the Vivado project by calling 
 ```
-./create_projects.sh siggen
+vivado -mode batch -source create_vivado_project.tcl -tclargs siggen
 ```
-The Vitis project can be re-created similar with the script
+or re-create the Vitis project with
 ```
 vitis -s create_vitis_project.py
 ```
-however note that it requires the hardware platform available as xsa files. 
+however note that the latter requires the hardware platform available as xsa file. 
 
-If you just want all changes from the remote repository, simple call again
+If you just want to include all changes from PS and PL, simply call 
 ```
 ./create_projects.sh siggen
 ```
-but be aware of the synthesizing times
+again - but be aware that the bitstream is generated on this call which takes some time.
 
 > [!WARNING]
 > Calling the scripts will delete all old project files - make sure to commit and merge your changes before updating!
