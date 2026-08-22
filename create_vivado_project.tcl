@@ -37,13 +37,17 @@ foreach item $files_to_clean {
 create_project $project_name $project_dir -part $fpga
 set_property board_part $board [current_project]
 
-
 # ==============================================================================
 # 3. Add sources
 # ==============================================================================
-# Add all hdl sources
+# Add all hdl sources to source_1
 if {[llength [glob -nocomplain $project_dir/src-pl/*.vhd $project_dir/src-pl/*.v $project_dir/src-pl/*.sv]] > 0} {
     add_files [glob $project_dir/src-pl*]
+}
+
+# Add all hdl sources to sim_1
+if {[llength [glob -nocomplain $project_dir/src-sim/*.vhd $project_dir/src-sim/*.v $project_dir/src-sim/*.sv]] > 0} {
+    add_files -fileset sim_1 [glob $project_dir/src-sim*]
 }
 
 # Add constraints file
